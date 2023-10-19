@@ -32,9 +32,17 @@ func main() {
 			slog.Error("建立 ws 连接失败", "err", err)
 			return
 		}
+
+		closed := false
+
 		// read
 		go func() {
 			for {
+				if closed {
+					slog.Info("read 时，遇到 ws 已关闭，停止 read 循环")
+					return
+				}
+
 				m_type, msg, err := conn.ReadMessage()
 				if err != nil {
 					slog.Error("读取 msg 失败", "err", err)
@@ -46,10 +54,16 @@ func main() {
 				)
 			}
 		}()
+
 		// write
 		go func() {
 			i := 0
 			for {
+				if closed {
+					slog.Info("write 时，遇到 ws 已关闭，停止 write 循环")
+					return
+				}
+
 				i += 1
 				err := conn.WriteMessage(websocket.TextMessage, []byte(
 					fmt.Sprintf("writing msg #%d", i),
@@ -57,8 +71,16 @@ func main() {
 				if err != nil {
 					slog.Error("写入 msg 失败", "err", err)
 				}
-				time.Sleep(time.Second * 5)
+				time.Sleep(time.Second * 3)
 			}
+		}()
+
+		// close
+		go func() {
+			time.Sleep(time.Second * 20)
+			closed = true
+			slog.Info("wx 关闭")
+			conn.Close()
 		}()
 	})
 

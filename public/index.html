@@ -13,13 +13,22 @@
     ws.onopen = function () {
       console.log('ws 建立成功')
       ws.send('socket 连接，建立成功')
-      setInterval(function() {
+      const timeid = setInterval(function() {
+        if(ws.readyState == ws.CLOSED) {
+          clearInterval(timeid)
+          console.log('ws 已关闭，清除定时任务（send）')
+          return
+        }
         ws.send('socket 连接正常')
-      }, 10000)
+      }, 5000)
     }
 
     ws.onmessage = function (e) {
       console.log('收到 msg', e.data)
+    }
+
+    ws.onclose = function (e) {
+      console.log('ws 已关闭', e)
     }
   </script>
 </html>
