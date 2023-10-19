@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <title>websocket example</title>
+    <meta charset="utf8">
+  </head>
+
+  <h1>看控制台</h1>
+
+  <script>
+    const ws = new WebSocket("ws://localhost:8080/chat")
+
+    ws.onopen = function () {
+      console.log('ws 建立成功')
+      ws.send('socket 连接，建立成功')
+      setInterval(function() {
+        ws.send('socket 连接正常')
+      }, 10000)
+    }
+
+    ws.onmessage = function (e) {
+      console.log('收到 msg', e.data)
+    }
+  </script>
+</html>
