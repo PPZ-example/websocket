@@ -1,4 +1,4 @@
-module websocket.ppz
+module zzz.ppz
 
 go 1.21.1
 
