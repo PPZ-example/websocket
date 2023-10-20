@@ -44,7 +44,7 @@ func (worker_ *worker) read() bool {
 	m_type, msg, err := worker_.conn.ReadMessage()
 	if err != nil {
 		slog.Error("读取 msg 失败", "err", err)
-		return false
+		return true
 	}
 	slog.Info("读取 msg",
 		"m_type", m_type,
